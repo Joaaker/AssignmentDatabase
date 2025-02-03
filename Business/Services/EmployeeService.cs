@@ -22,20 +22,16 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IRoleReposi
         try
         {
             var roleEntity = await _roleRepository.GetAsync(r => r.RoleName == form.RoleName);
-            if(roleEntity == null)
+            if (roleEntity == null)
             {
-                var newRole = new RoleEntity { RoleName = form.RoleName };
-                await _roleRepository.CreateAsync(newRole);
-                var employeeEntity = EmployeeFactory.CreateEntity(form, newRole.Id);
-                var result = await _employeeRepository.CreateAsync(employeeEntity);
-                return ResponseResult.Ok();
+                roleEntity = new RoleEntity { RoleName = form.RoleName };
+                await _roleRepository.CreateAsync(roleEntity);
             }
-            else
-            {
-                var employeeEntity = EmployeeFactory.CreateEntity(form, roleEntity.Id);
-                var result = await _employeeRepository.CreateAsync(employeeEntity);
-                return ResponseResult.Ok();
-            }
+
+            var employeeEntity = EmployeeFactory.CreateEntity(form, roleEntity.Id);
+            await _employeeRepository.CreateAsync(employeeEntity);
+
+            return ResponseResult.Ok();
         }
         catch (Exception ex)
         {
@@ -44,23 +40,42 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IRoleReposi
         }
     }
 
-    public Task<IResponseResult> DeleteEmployeeAsync(int id)
+    public async Task<IResponseResult> DeleteEmployeeAsync(int id)
     {
-        throw new NotImplementedException();
+        var entity = await _employeeRepository.GetAsync(x => x.Id == id);
+        if (entity == null)
+            return ResponseResult.NotFound("Employee not found");
+
+        var result = await _employeeRepository.DeleteAsync(x => x.Id == id);
+        return result ? ResponseResult.Ok() : ResponseResult.Error("Unable to delete employee");
     }
 
-    public Task<IResponseResult> GetEmployeeByIdAsync(int id)
+    public async Task<IResponseResult> GetEmployeeByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        var entity = await _employeeRepository.GetAsync(x => x.Id == id);
+        if (entity == null)
+            return ResponseResult.NotFound("Employee not found");
+        
+        var employee = EmployeeFactory.CreateModel(entity);
+        return ResponseResult<Employee>.Ok(employee);
     }
 
-    public Task<IResponseResult> GetEmployeesAsync()
+    public async Task<IResponseResult> GetAllEmployeesAsync()
     {
-        throw new NotImplementedException();
+        var entites = await _employeeRepository.GetAllAsync();
+        var employees = entites.Select(EmployeeFactory.CreateModel).ToList();
+        return ResponseResult<IEnumerable<Employee>>.Ok(employees);
     }
 
-    public Task<IResponseResult> UpdateEmployeeAsync(int id, EmployeeRegistrationForm updateForm)
+    public async Task<IResponseResult> UpdateEmployeeAsync(int id, EmployeeRegistrationForm updateForm)
     {
-        throw new NotImplementedException();
+        var entityToUpdate = await _employeeRepository.GetAsync(x => x.Id == id);
+        if (entityToUpdate == null)
+            return ResponseResult.NotFound("Employee not found");
+
+        entityToUpdate = EmployeeFactory.CreateEntity(updateForm, entityToUpdate.Id);
+        var result = await _employeeRepository.UpdateAsync(x => x.Id == id, entityToUpdate);
+
+        return result ? ResponseResult.Ok() : ResponseResult.Error("Unable to update employee");
     }
 }
