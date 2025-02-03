@@ -6,5 +6,4 @@ namespace Data.Repositories;
 
 public class UnitTypeRepository(DataContext context) : BaseRepository<UnitTypeEntity>(context), IUnitTypeRepository
 {
-
 }

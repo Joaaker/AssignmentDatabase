@@ -6,5 +6,4 @@ namespace Data.Repositories;
 
 public class CustomerRepository(DataContext context) : BaseRepository<CustomerEntity>(context), ICustomerRepository
 {
-
 }

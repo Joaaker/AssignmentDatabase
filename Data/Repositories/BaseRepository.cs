@@ -32,7 +32,6 @@ public abstract class BaseRepository<TEntity>(DataContext context) : IBaseReposi
 
     public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
     {
-        
         try
         {
             return await _dbSet.ToListAsync();

@@ -40,7 +40,7 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
             if (entity == null)
                 return ResponseResult.NotFound("Customer not found");
 
-            var result = await _customerRepository.DeleteAsync(x => x.Id == id);
+            bool result = await _customerRepository.DeleteAsync(x => x.Id == id);
             return result ? ResponseResult.Ok() : ResponseResult.Error("Unable to delete customer");
         }
         catch (Exception ex)
@@ -85,6 +85,9 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
 
     public async Task<IResponseResult> UpdateCustomerAsync(int id, CustomerRegistrationForm updateForm)
     {
+        if (updateForm == null)
+            return ResponseResult.BadRequest("Invalid form");
+
         try
         {
             var entityToUpdate = await _customerRepository.GetAsync(x => x.Id == id);

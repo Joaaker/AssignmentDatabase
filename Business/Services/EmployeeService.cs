@@ -48,7 +48,7 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IRoleReposi
             if (entity == null)
                 return ResponseResult.NotFound("Employee not found");
 
-            var result = await _employeeRepository.DeleteAsync(x => x.Id == id);
+            bool result = await _employeeRepository.DeleteAsync(x => x.Id == id);
             return result ? ResponseResult.Ok() : ResponseResult.Error("Unable to delete employee");
         }
         catch (Exception ex)
@@ -93,6 +93,9 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IRoleReposi
 
     public async Task<IResponseResult> UpdateEmployeeAsync(int id, EmployeeRegistrationForm updateForm)
     {
+        if (updateForm == null)
+            return ResponseResult.BadRequest("Invalid form");
+
         try
         {
             var entityToUpdate = await _employeeRepository.GetAsync(x => x.Id == id);
