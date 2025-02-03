@@ -6,7 +6,7 @@ public class ProjectRegistrationForm
     public string? Description { get; set; }
     public DateOnly StartDate { get; set; }
     public DateOnly? EndDate { get; set; }
-    public string ProjectStatus { get; set; } = null!;
-    public string? CustomerName { get; set; }
-    public string ProjectManagerName { get; set; } = null!;
+    public int ProjectStatusId { get; set; }
+    public int CustomerId { get; set; }
+    public int ProjectManagerId { get; set; }
 }
