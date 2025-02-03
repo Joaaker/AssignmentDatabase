@@ -34,40 +34,72 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
 
     public async Task<IResponseResult> DeleteCustomerAsync(int id)
     {
-        var entity = await _customerRepository.GetAsync(x => x.Id == id);
-        if (entity == null)
-            return ResponseResult.NotFound("Customer not found");
+        try
+        {
+            var entity = await _customerRepository.GetAsync(x => x.Id == id);
+            if (entity == null)
+                return ResponseResult.NotFound("Customer not found");
 
-        var result = await _customerRepository.DeleteAsync(x => x.Id == id);
-        return result ? ResponseResult.Ok() : ResponseResult.Error("Unable to delete customer");
+            var result = await _customerRepository.DeleteAsync(x => x.Id == id);
+            return result ? ResponseResult.Ok() : ResponseResult.Error("Unable to delete customer");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            return ResponseResult.Error("Error deleting customer");
+        }
     }
 
     public async Task<IResponseResult> GetAllCustomersAsync()
     {
-        var entites = await _customerRepository.GetAllAsync();
-        var customers = entites.Select(CustomerFactory.CreateModel).ToList();
-        return ResponseResult<IEnumerable<Customer>>.Ok(customers);
+        try
+        {
+            var entites = await _customerRepository.GetAllAsync();
+            var customers = entites.Select(CustomerFactory.CreateModel).ToList();
+            return ResponseResult<IEnumerable<Customer>>.Ok(customers);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            return ResponseResult.Error("Error retrieving customers");
+        }
     }
 
     public async Task<IResponseResult> GetCustomerByIdAsync(int id)
     {
-        var entity = await _customerRepository.GetAsync(x => x.Id == id);
-        if (entity == null)
-            return ResponseResult.NotFound("Customer not found");
+        try
+        {
+            var entity = await _customerRepository.GetAsync(x => x.Id == id);
+            if (entity == null)
+                return ResponseResult.NotFound("Customer not found");
 
-        var customer = CustomerFactory.CreateModel(entity);
-        return ResponseResult<Customer>.Ok(customer);
+            var customer = CustomerFactory.CreateModel(entity);
+            return ResponseResult<Customer>.Ok(customer);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            return ResponseResult.Error("Error retrieving customer");
+        }
     }
 
     public async Task<IResponseResult> UpdateCustomerAsync(int id, CustomerRegistrationForm updateForm)
     {
-        var entityToUpdate = await _customerRepository.GetAsync(x => x.Id == id);
-        if (entityToUpdate == null)
-            return ResponseResult.NotFound("Customer not found");
+        try
+        {
+            var entityToUpdate = await _customerRepository.GetAsync(x => x.Id == id);
+            if (entityToUpdate == null)
+                return ResponseResult.NotFound("Customer not found");
 
-        entityToUpdate = CustomerFactory.CreateEntity(updateForm);
-        var result = await _customerRepository.UpdateAsync(x => x.Id == id, entityToUpdate);
+            entityToUpdate = CustomerFactory.CreateEntity(updateForm);
+            var result = await _customerRepository.UpdateAsync(x => x.Id == id, entityToUpdate);
 
-        return result ? ResponseResult.Ok() : ResponseResult.Error("Unable to update customer");
+            return result ? ResponseResult.Ok() : ResponseResult.Error("Unable to update customer");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            return ResponseResult.Error("Error updating customer");
+        }
     }
 }

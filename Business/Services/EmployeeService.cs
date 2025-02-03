@@ -42,40 +42,72 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IRoleReposi
 
     public async Task<IResponseResult> DeleteEmployeeAsync(int id)
     {
-        var entity = await _employeeRepository.GetAsync(x => x.Id == id);
-        if (entity == null)
-            return ResponseResult.NotFound("Employee not found");
+        try
+        {
+            var entity = await _employeeRepository.GetAsync(x => x.Id == id);
+            if (entity == null)
+                return ResponseResult.NotFound("Employee not found");
 
-        var result = await _employeeRepository.DeleteAsync(x => x.Id == id);
-        return result ? ResponseResult.Ok() : ResponseResult.Error("Unable to delete employee");
+            var result = await _employeeRepository.DeleteAsync(x => x.Id == id);
+            return result ? ResponseResult.Ok() : ResponseResult.Error("Unable to delete employee");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            return ResponseResult.Error("Error deleting employee");
+        }
     }
 
     public async Task<IResponseResult> GetEmployeeByIdAsync(int id)
     {
-        var entity = await _employeeRepository.GetAsync(x => x.Id == id);
-        if (entity == null)
-            return ResponseResult.NotFound("Employee not found");
-        
-        var employee = EmployeeFactory.CreateModel(entity);
-        return ResponseResult<Employee>.Ok(employee);
+        try
+        {
+            var entity = await _employeeRepository.GetAsync(x => x.Id == id);
+            if (entity == null)
+                return ResponseResult.NotFound("Employee not found");
+
+            var employee = EmployeeFactory.CreateModel(entity);
+            return ResponseResult<Employee>.Ok(employee);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            return ResponseResult.Error("Error retrieving employee");
+        }
     }
 
     public async Task<IResponseResult> GetAllEmployeesAsync()
     {
-        var entites = await _employeeRepository.GetAllAsync();
-        var employees = entites.Select(EmployeeFactory.CreateModel).ToList();
-        return ResponseResult<IEnumerable<Employee>>.Ok(employees);
+        try
+        {
+            var entites = await _employeeRepository.GetAllAsync();
+            var employees = entites.Select(EmployeeFactory.CreateModel).ToList();
+            return ResponseResult<IEnumerable<Employee>>.Ok(employees);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            return ResponseResult.Error("Error retrieving employees");
+        }
     }
 
     public async Task<IResponseResult> UpdateEmployeeAsync(int id, EmployeeRegistrationForm updateForm)
     {
-        var entityToUpdate = await _employeeRepository.GetAsync(x => x.Id == id);
-        if (entityToUpdate == null)
-            return ResponseResult.NotFound("Employee not found");
+        try
+        {
+            var entityToUpdate = await _employeeRepository.GetAsync(x => x.Id == id);
+            if (entityToUpdate == null)
+                return ResponseResult.NotFound("Employee not found");
 
-        entityToUpdate = EmployeeFactory.CreateEntity(updateForm, entityToUpdate.Id);
-        var result = await _employeeRepository.UpdateAsync(x => x.Id == id, entityToUpdate);
+            entityToUpdate = EmployeeFactory.CreateEntity(updateForm, entityToUpdate.Id);
+            var result = await _employeeRepository.UpdateAsync(x => x.Id == id, entityToUpdate);
 
-        return result ? ResponseResult.Ok() : ResponseResult.Error("Unable to update employee");
+            return result ? ResponseResult.Ok() : ResponseResult.Error("Unable to update employee");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            return ResponseResult.Error("Error updating employee");
+        }
     }
 }

@@ -1,6 +1,10 @@
-﻿using Business.Dtos;
+﻿using System.Diagnostics;
+using Business.Dtos;
+using Business.Factories;
 using Business.Interfaces;
+using Business.Models;
 using Data.Interfaces;
+using Data.Repositories;
 
 namespace Business.Services;
 
@@ -8,28 +12,78 @@ public class ServiceService(IServiceRepository serviceRepository) : IServiceServ
 {
     private readonly IServiceRepository _serviceRepository = serviceRepository;
 
-    public Task<IResponseResult> CreateServiceAsync(ServiceRegistrationForm form)
+    public async Task<IResponseResult> CreateServiceAsync(ServiceRegistrationForm form)
     {
-        throw new NotImplementedException();
+        if (form == null)
+            return ResponseResult.BadRequest("Invalid form");
+
+        try
+        {
+
+
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            return ResponseResult.Error("Error retrieving service");
+        }
+
+
     }
 
     public Task<IResponseResult> DeleteServiceAsync(int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+
+
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            return ResponseResult.Error("Error deleting service");
+        }
     }
 
-    public Task<IResponseResult> GetAllServicesAsync()
+    public async Task<IResponseResult> GetAllServicesAsync()
     {
-        throw new NotImplementedException();
+        try
+        {
+
+
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            return ResponseResult.Error("Error geting services");
+        }
     }
 
-    public Task<IResponseResult> GetServiceByIdAsync(int id)
+    public async Task<IResponseResult> GetServiceByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+
+
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            return ResponseResult.Error("Error geting service");
+        }
     }
 
-    public Task<IResponseResult> UpdateServiceAsync(int id, ServiceRegistrationForm updateForm)
+    public async Task<IResponseResult> UpdateServiceAsync(int id, ServiceRegistrationForm updateForm)
     {
-        throw new NotImplementedException();
+        try
+        {
+
+
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            return ResponseResult.Error("Error updating service");
+        }
     }
 }
