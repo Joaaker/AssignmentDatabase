@@ -6,3 +6,8 @@ public interface IResponseResult
     int StatusCode { get; }
     string ErrorMessage { get; }
 }
+
+public interface IResponseResult<T> : IResponseResult
+{
+    T? Data { get; }
+}

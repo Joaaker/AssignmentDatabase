@@ -10,4 +10,5 @@ public class ProjectModel
     public string StatusType { get; set; } = null!;
     public string? CustomerName { get; set; }
     public string ProjectManagerName { get; set; } = null!;
+    public ICollection<ServiceModel> Services { get; set; } = [];
 }

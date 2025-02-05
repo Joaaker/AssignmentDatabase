@@ -15,6 +15,14 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+    //Denna kod är genererad av ChatGPT o3-mini - Den skapar 3st Status när man kör migration
+        modelBuilder.Entity<StatusEntity>()
+            .HasData( 
+            new StatusEntity { Id = 1, StatusName = "Ej påbörjat" },
+            new StatusEntity { Id = 2, StatusName = "Pågående" },
+            new StatusEntity { Id = 3, StatusName = "Avslutat" }
+        );
+
         modelBuilder.Entity<EmployeeEntity>()
             .HasOne(x => x.Role)
             .WithMany(x => x.Employees)

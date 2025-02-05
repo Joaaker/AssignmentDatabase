@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250127153439_InitializeDatabase")]
-    partial class InitializeDatabase
+    [Migration("20250205120452_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -166,6 +166,23 @@ namespace Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Statuses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            StatusName = "Ej påbörjat"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            StatusName = "Pågående"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            StatusName = "Avslutat"
+                        });
                 });
 
             modelBuilder.Entity("Data.Entities.UnitTypeEntity", b =>

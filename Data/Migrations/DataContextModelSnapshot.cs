@@ -163,6 +163,23 @@ namespace Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Statuses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            StatusName = "Ej påbörjat"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            StatusName = "Pågående"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            StatusName = "Avslutat"
+                        });
                 });
 
             modelBuilder.Entity("Data.Entities.UnitTypeEntity", b =>
