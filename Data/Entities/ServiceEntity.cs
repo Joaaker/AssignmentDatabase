@@ -16,5 +16,5 @@ public class ServiceEntity
     public int UnitId { get; set; }
     public UnitTypeEntity UnitType { get; set; } = null!;
 
-    public ICollection<ProjectEntity> Projects { get; set; } = [];
+    public ICollection<ProjectServiceJunctionEntity> ProjectServices { get; set; } = [];
 }

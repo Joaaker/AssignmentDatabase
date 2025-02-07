@@ -1,4 +1,4 @@
-﻿DELETE FROM ProjectEntityServiceEntity;
+﻿DELETE FROM ProjectServiceJunctionEntity;
 DELETE FROM Projects;
 DELETE FROM Employees;
 DELETE FROM "Services";
@@ -36,7 +36,7 @@ INSERT INTO Projects (Title, Description, StartDate, EndDate, StatusId, Customer
 ('Interntprojekt', 'Byte av glödlampa på personal toaletten', '2024-02-01', NULL, 2, 2, 2), 
 ('Pengar ska in', NULL, '2024-03-01', '2024-08-01', 3, 3, 3);
 
-INSERT INTO ProjectEntityServiceEntity (ProjectsId, ServicesId) VALUES 
+INSERT INTO ProjectServiceJunctionEntity (ProjectId, ServiceId) VALUES 
 (100, 1), 
 (100, 2), 
 (102, 3);

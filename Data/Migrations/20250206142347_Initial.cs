@@ -145,24 +145,24 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProjectEntityServiceEntity",
+                name: "ProjectServiceJunctionEntity",
                 columns: table => new
                 {
-                    ProjectsId = table.Column<int>(type: "int", nullable: false),
-                    ServicesId = table.Column<int>(type: "int", nullable: false)
+                    ProjectId = table.Column<int>(type: "int", nullable: false),
+                    ServiceId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProjectEntityServiceEntity", x => new { x.ProjectsId, x.ServicesId });
+                    table.PrimaryKey("PK_ProjectServiceJunctionEntity", x => new { x.ProjectId, x.ServiceId });
                     table.ForeignKey(
-                        name: "FK_ProjectEntityServiceEntity_Projects_ProjectsId",
-                        column: x => x.ProjectsId,
+                        name: "FK_ProjectServiceJunctionEntity_Projects_ProjectId",
+                        column: x => x.ProjectId,
                         principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProjectEntityServiceEntity_Services_ServicesId",
-                        column: x => x.ServicesId,
+                        name: "FK_ProjectServiceJunctionEntity_Services_ServiceId",
+                        column: x => x.ServiceId,
                         principalTable: "Services",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -184,11 +184,6 @@ namespace Data.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectEntityServiceEntity_ServicesId",
-                table: "ProjectEntityServiceEntity",
-                column: "ServicesId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Projects_CustomerId",
                 table: "Projects",
                 column: "CustomerId");
@@ -204,6 +199,11 @@ namespace Data.Migrations
                 column: "StatusId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProjectServiceJunctionEntity_ServiceId",
+                table: "ProjectServiceJunctionEntity",
+                column: "ServiceId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Services_UnitId",
                 table: "Services",
                 column: "UnitId");
@@ -213,7 +213,7 @@ namespace Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ProjectEntityServiceEntity");
+                name: "ProjectServiceJunctionEntity");
 
             migrationBuilder.DropTable(
                 name: "Projects");

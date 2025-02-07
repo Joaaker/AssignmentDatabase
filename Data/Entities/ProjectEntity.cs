@@ -29,5 +29,5 @@ public class ProjectEntity
     public int ProjectManagerId { get; set; }
     public EmployeeEntity ProjectManager { get; set; } = null!;
 
-    public ICollection<ServiceEntity> Services { get; set; } = [];
+    public ICollection<ProjectServiceJunctionEntity> ProjectServices { get; set; } = [];
 }

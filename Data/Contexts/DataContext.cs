@@ -54,11 +54,20 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<ProjectEntity>()
-            .HasMany(x => x.Services)
-            .WithMany(x => x.Projects);
-
-        modelBuilder.Entity<ProjectEntity>()
-            .Property(e => e.Id)
+            .Property(x => x.Id)
             .UseIdentityColumn(100, 1);
+
+        modelBuilder.Entity<ProjectServiceJunctionEntity>()
+            .HasKey(x => new { x.ProjectId, x.ServiceId });
+
+        modelBuilder.Entity<ProjectServiceJunctionEntity>()
+            .HasOne(x => x.Project)
+            .WithMany(x => x.ProjectServices)
+            .HasForeignKey(x => x.ProjectId);
+
+        modelBuilder.Entity<ProjectServiceJunctionEntity>()
+            .HasOne(x => x.Service)
+            .WithMany(x => x.ProjectServices)
+            .HasForeignKey(x => x.ServiceId);
     }
 }

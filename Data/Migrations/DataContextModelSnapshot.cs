@@ -106,6 +106,21 @@ namespace Data.Migrations
                     b.ToTable("Projects");
                 });
 
+            modelBuilder.Entity("Data.Entities.ProjectServiceJunctionEntity", b =>
+                {
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ServiceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProjectId", "ServiceId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("ProjectServiceJunctionEntity");
+                });
+
             modelBuilder.Entity("Data.Entities.RoleEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -199,21 +214,6 @@ namespace Data.Migrations
                     b.ToTable("UnitTypes");
                 });
 
-            modelBuilder.Entity("ProjectEntityServiceEntity", b =>
-                {
-                    b.Property<int>("ProjectsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ServicesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProjectsId", "ServicesId");
-
-                    b.HasIndex("ServicesId");
-
-                    b.ToTable("ProjectEntityServiceEntity");
-                });
-
             modelBuilder.Entity("Data.Entities.EmployeeEntity", b =>
                 {
                     b.HasOne("Data.Entities.RoleEntity", "Role")
@@ -252,6 +252,25 @@ namespace Data.Migrations
                     b.Navigation("Status");
                 });
 
+            modelBuilder.Entity("Data.Entities.ProjectServiceJunctionEntity", b =>
+                {
+                    b.HasOne("Data.Entities.ProjectEntity", "Project")
+                        .WithMany("ProjectServices")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.Entities.ServiceEntity", "Service")
+                        .WithMany("ProjectServices")
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+
+                    b.Navigation("Service");
+                });
+
             modelBuilder.Entity("Data.Entities.ServiceEntity", b =>
                 {
                     b.HasOne("Data.Entities.UnitTypeEntity", "UnitType")
@@ -261,21 +280,6 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.Navigation("UnitType");
-                });
-
-            modelBuilder.Entity("ProjectEntityServiceEntity", b =>
-                {
-                    b.HasOne("Data.Entities.ProjectEntity", null)
-                        .WithMany()
-                        .HasForeignKey("ProjectsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Data.Entities.ServiceEntity", null)
-                        .WithMany()
-                        .HasForeignKey("ServicesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Data.Entities.CustomerEntity", b =>
@@ -288,9 +292,19 @@ namespace Data.Migrations
                     b.Navigation("Projects");
                 });
 
+            modelBuilder.Entity("Data.Entities.ProjectEntity", b =>
+                {
+                    b.Navigation("ProjectServices");
+                });
+
             modelBuilder.Entity("Data.Entities.RoleEntity", b =>
                 {
                     b.Navigation("Employees");
+                });
+
+            modelBuilder.Entity("Data.Entities.ServiceEntity", b =>
+                {
+                    b.Navigation("ProjectServices");
                 });
 
             modelBuilder.Entity("Data.Entities.StatusEntity", b =>
