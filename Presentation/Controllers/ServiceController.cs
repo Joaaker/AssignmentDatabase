@@ -13,7 +13,7 @@ public class ServiceController(IServiceService serviceService) : Controller
     private readonly IServiceService _serviceService = serviceService;
 
     [HttpPost]
-    public async Task<IActionResult> CreateProject([FromBody] ServiceRegistrationForm form)
+    public async Task<IActionResult> CreateService([FromBody] ServiceRegistrationForm form)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -31,7 +31,7 @@ public class ServiceController(IServiceService serviceService) : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllProjects()
+    public async Task<IActionResult> GetAllServices()
     {
         if (!ModelState.IsValid)
             return BadRequest();
