@@ -9,7 +9,7 @@ public interface IBaseRepository<TEntity> where TEntity : class
     Task RollbackTransactionAsync();
     Task<bool> AlreadyExistsAsync(Expression<Func<TEntity, bool>> expression);
     Task<TEntity> AddAsync(TEntity entity);
-    Task<int> SaveAsync();
+    Task<bool> SaveAsync();
     Task<bool> DeleteAsync(Expression<Func<TEntity, bool>> expression);
     Task<IEnumerable<TEntity>> GetAllAsync();
     Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression);

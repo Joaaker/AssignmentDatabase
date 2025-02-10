@@ -47,7 +47,7 @@ public abstract class BaseRepository<TEntity>(DataContext context) : IBaseReposi
     public virtual async Task<TEntity> AddAsync(TEntity entity)
     {
         if (entity == null)
-            return null!;
+            throw new Exception("Entity cannot be null");
 
         try
         {
@@ -61,9 +61,22 @@ public abstract class BaseRepository<TEntity>(DataContext context) : IBaseReposi
         }
     }
 
-    public virtual async Task<int> SaveAsync()
+    public virtual async Task<bool> SaveAsync()
     {
-        return await _context.SaveChangesAsync();
+        try
+        {
+            var result = await _context.SaveChangesAsync();
+
+            if (result == 0)
+                throw new Exception("Failed saving to database");
+            else
+                return true;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error saving entity :: {ex.Message}");
+            return false;
+        }
     }
 
     public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
@@ -82,7 +95,7 @@ public abstract class BaseRepository<TEntity>(DataContext context) : IBaseReposi
     public virtual async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression)
     {
         if (expression == null)
-            return null!;
+            throw new Exception("Expression cannot be null");
 
         try
         {
@@ -95,18 +108,18 @@ public abstract class BaseRepository<TEntity>(DataContext context) : IBaseReposi
         }
     }
 
-    public virtual async Task<bool> UpdateAsync(Expression<Func<TEntity, bool>> expression, TEntity updatedEntity)
+    public virtual async Task<bool> UpdateAsync(Expression<Func<TEntity, bool>> expression, TEntity entityToUpdate)
     {
-        if (updatedEntity == null)
-            return false!;
+        if (entityToUpdate == null)
+            throw new Exception("Entity to update cannot be null");
 
         try
         {
-            var existingEntity = await _dbSet.FirstOrDefaultAsync(expression) ?? null;
+            var existingEntity = await _dbSet.FirstOrDefaultAsync(expression);
             if (existingEntity == null)
-                return false!;
+                throw new Exception("Cannot find existing entity");
 
-            _context.Entry(existingEntity).CurrentValues.SetValues(updatedEntity);
+            _context.Entry(existingEntity).CurrentValues.SetValues(entityToUpdate);
             return true;
         }
         catch (Exception ex)
@@ -119,13 +132,13 @@ public abstract class BaseRepository<TEntity>(DataContext context) : IBaseReposi
     public virtual async Task<bool> DeleteAsync(Expression<Func<TEntity, bool>> expression)
     {
         if (expression == null)
-            return false;
+            throw new Exception("Expression cannot be null");
 
         try
         {
-            var existingEntity = await _dbSet.FirstOrDefaultAsync(expression) ?? null;
+            var existingEntity = await _dbSet.FirstOrDefaultAsync(expression);
             if (existingEntity == null)
-                return false;
+                throw new Exception("Cannot find existing entity");
 
             _dbSet.Remove(existingEntity);
             return true;
@@ -139,6 +152,9 @@ public abstract class BaseRepository<TEntity>(DataContext context) : IBaseReposi
 
     public virtual async Task<bool> AlreadyExistsAsync(Expression<Func<TEntity, bool>> expression)
     {
+        if (expression == null)
+            throw new Exception("Expression cannot be null");
+
         try
         {
             return await _dbSet.AnyAsync(expression);
