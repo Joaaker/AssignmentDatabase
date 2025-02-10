@@ -24,7 +24,7 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
                 return ResponseResult.Error("Project with that name already exist");
 
             var projectEntity = ProjectFactory.CreateEntity(form);
-            await _projectRepository.CreateAsync(projectEntity);
+            await _projectRepository.AddAsync(projectEntity);
             return ResponseResult.Ok();
         }
         catch (Exception ex)

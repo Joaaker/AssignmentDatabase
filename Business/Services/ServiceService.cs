@@ -18,22 +18,27 @@ public class ServiceService(IServiceRepository serviceRepository, IUnitTypeRepos
         if (form == null)
             return ResponseResult.BadRequest("Invalid form");
 
+        await _serviceRepository.BeginTransactionAsync();
         try
         {
             var unitEntity = await _unitTypeRepository.GetAsync(x => x.UnitType == form.UnitType);
             if (unitEntity == null)
             {
                 unitEntity = new UnitTypeEntity { UnitType = form.UnitType };
-                await _unitTypeRepository.CreateAsync(unitEntity);
+                await _unitTypeRepository.AddAsync(unitEntity);
+                await _unitTypeRepository.SaveAsync();
             }
 
             var serviceEntity = ServiceFactory.CreateEntity(form, unitEntity.Id);
-            await _serviceRepository.CreateAsync(serviceEntity);
+            await _serviceRepository.AddAsync(serviceEntity);
+            await _serviceRepository.SaveAsync();
 
+            await _serviceRepository.CommitTransactionAsync();
             return ResponseResult.Ok();
         }
         catch (Exception ex)
         {
+            await _serviceRepository.RollbackTransactionAsync();
             Debug.WriteLine(ex.Message);
             return ResponseResult.Error("Error retrieving service");
         }
@@ -41,6 +46,8 @@ public class ServiceService(IServiceRepository serviceRepository, IUnitTypeRepos
 
     public async Task<IResponseResult> DeleteServiceAsync(int id)
     {
+        await _serviceRepository.BeginTransactionAsync();
+
         try
         {
             var entity = await _serviceRepository.GetAsync(x => x.Id == id);
@@ -48,10 +55,20 @@ public class ServiceService(IServiceRepository serviceRepository, IUnitTypeRepos
                 return ResponseResult.NotFound("Service not found");
 
             bool result = await _serviceRepository.DeleteAsync(x => x.Id == id);
-            return result ? ResponseResult.Ok() : ResponseResult.Error("Unable to delete service");
+            if (result)
+                await _serviceRepository.SaveAsync();
+            else
+            {
+                await _serviceRepository.RollbackTransactionAsync();
+                return ResponseResult.Error("Unable to delete service");
+            }
+
+            await _serviceRepository.CommitTransactionAsync();
+            return ResponseResult.Ok();
         }
         catch (Exception ex)
         {
+            await _serviceRepository.RollbackTransactionAsync();
             Debug.WriteLine(ex.Message);
             return ResponseResult.Error("Error deleting service");
         }
@@ -95,19 +112,33 @@ public class ServiceService(IServiceRepository serviceRepository, IUnitTypeRepos
         if (updateForm == null)
             return ResponseResult.BadRequest("Invalid form");
 
+        await _serviceRepository.BeginTransactionAsync();
+
         try
         {
             var entityToUpdate = await _serviceRepository.GetAsync(x => x.Id == id);
             if (entityToUpdate == null)
+            {
+                await _serviceRepository.RollbackTransactionAsync();
                 return ResponseResult.NotFound("Service not found");
+            }
 
             entityToUpdate = ServiceFactory.CreateEntity(updateForm, entityToUpdate.UnitId);
             var result = await _serviceRepository.UpdateAsync(x => x.Id == id, entityToUpdate);
+            if (result)
+                await _serviceRepository.SaveAsync();
+            else
+            {
+                await _serviceRepository.RollbackTransactionAsync();
+                return ResponseResult.Error("Unable to update service");
+            }
 
-            return result ? ResponseResult.Ok() : ResponseResult.Error("Unable to update service");
+            await _serviceRepository.CommitTransactionAsync();
+            return ResponseResult.Ok();
         }
         catch (Exception ex)
         {
+            await _serviceRepository.RollbackTransactionAsync();
             Debug.WriteLine(ex.Message);
             return ResponseResult.Error("Error updating service");
         }

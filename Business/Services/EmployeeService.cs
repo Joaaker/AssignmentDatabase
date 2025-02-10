@@ -25,11 +25,11 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IRoleReposi
             if (roleEntity == null)
             {
                 roleEntity = new RoleEntity { RoleName = form.RoleName };
-                await _roleRepository.CreateAsync(roleEntity);
+                await _roleRepository.AddAsync(roleEntity);
             }
 
             var employeeEntity = EmployeeFactory.CreateEntity(form, roleEntity.Id);
-            await _employeeRepository.CreateAsync(employeeEntity);
+            await _employeeRepository.AddAsync(employeeEntity);
 
             return ResponseResult.Ok();
         }

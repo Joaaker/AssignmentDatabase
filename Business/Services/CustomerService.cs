@@ -22,7 +22,7 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
                 return ResponseResult.Error("Customer with that name already exist");
 
             var customerEntity = CustomerFactory.CreateEntity(form);
-            await _customerRepository.CreateAsync(customerEntity);
+            await _customerRepository.AddAsync(customerEntity);
             return ResponseResult.Ok();
         }
         catch (Exception ex)
