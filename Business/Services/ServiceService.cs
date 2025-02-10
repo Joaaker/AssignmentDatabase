@@ -112,26 +112,19 @@ public class ServiceService(IServiceRepository serviceRepository, IUnitTypeRepos
         if (updateForm == null)
             return ResponseResult.BadRequest("Invalid form");
 
-        await _serviceRepository.BeginTransactionAsync();
-
         try
         {
             var entityToUpdate = await _serviceRepository.GetAsync(x => x.Id == id);
             if (entityToUpdate == null)
-            {
-                await _serviceRepository.RollbackTransactionAsync();
                 return ResponseResult.NotFound("Service not found");
-            }
 
+            await _serviceRepository.BeginTransactionAsync();
             entityToUpdate = ServiceFactory.CreateEntity(updateForm, entityToUpdate.UnitId);
             var result = await _serviceRepository.UpdateAsync(x => x.Id == id, entityToUpdate);
             if (result)
                 await _serviceRepository.SaveAsync();
             else
-            {
-                await _serviceRepository.RollbackTransactionAsync();
-                return ResponseResult.Error("Unable to update service");
-            }
+                throw new Exception("Error saving service");
 
             await _serviceRepository.CommitTransactionAsync();
             return ResponseResult.Ok();
