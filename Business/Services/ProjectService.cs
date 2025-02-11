@@ -4,7 +4,6 @@ using Business.Factories;
 using Business.Interfaces;
 using Business.Models;
 using Data.Interfaces;
-using Data.Repositories;
 
 namespace Business.Services;
 
@@ -23,34 +22,25 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
             if (projectExist == true)
                 return ResponseResult.Error("Project with that name already exist");
 
+            await _projectRepository.BeginTransactionAsync();
             var projectEntity = ProjectFactory.CreateEntity(form);
             await _projectRepository.AddAsync(projectEntity);
+            var saveResult = await _projectRepository.SaveAsync();
+            if (saveResult == false)
+                throw new Exception("Error saving project");
+
+            await _projectRepository.CommitTransactionAsync();
             return ResponseResult.Ok();
         }
         catch (Exception ex)
         {
+            await _projectRepository.RollbackTransactionAsync();
             Debug.WriteLine(ex.Message);
-            return ResponseResult.Error("Error creating project");
+            return ResponseResult.Error($"Error creating project :: {ex.Message}");
         }
     }
 
-    public async Task<IResponseResult> DeleteProjectAsync(int id)
-    {
-        try
-        {
-            var entity = await _projectRepository.GetAsync(x => x.Id == id);
-            if (entity == null)
-                return ResponseResult.NotFound("Project not found");
 
-            bool result = await _projectRepository.DeleteAsync(x => x.Id == id);
-            return result ? ResponseResult.Ok() : ResponseResult.Error("Unable to delete project");
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex.Message);
-            return ResponseResult.Error("Error deleting project");
-        }
-    }
 
     public async Task<IResponseResult> GetAllProjectsAsync()
     {
@@ -85,6 +75,7 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
         }
     }
 
+    //To do, gör så att det går at uppdatera projekt med nya services
     public async Task<IResponseResult> UpdateProjectAsync(int id, ProjectRegistrationForm updateForm)
     {
         if (updateForm == null)
@@ -96,15 +87,46 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
             if (entityToUpdate == null)
                 return ResponseResult.NotFound("Project not found");
 
+            await _projectRepository.BeginTransactionAsync();
             entityToUpdate = ProjectFactory.CreateEntity(updateForm);
-            var result = await _projectRepository.UpdateAsync(x => x.Id == id, entityToUpdate);
+            await _projectRepository.UpdateAsync(x => x.Id == id, entityToUpdate);
+            var saveResult = await _projectRepository.SaveAsync();
+            if (saveResult == false)
+                throw new Exception("Error saving project");
 
-            return result ? ResponseResult.Ok() : ResponseResult.Error("Unable to update project");
+            await _projectRepository.CommitTransactionAsync();
+            return ResponseResult.Ok();
         }
         catch (Exception ex)
         {
+            await _projectRepository.RollbackTransactionAsync();
             Debug.WriteLine(ex.Message);
-            return ResponseResult.Error("Error updating project");
+            return ResponseResult.Error($"Error updating project :: {ex.Message}");
+        }
+    }
+
+    public async Task<IResponseResult> DeleteProjectAsync(int id)
+    {
+        try
+        {
+            var entity = await _projectRepository.GetAsync(x => x.Id == id);
+            if (entity == null)
+                return ResponseResult.NotFound("Project not found");
+
+            await _projectRepository.BeginTransactionAsync();
+            await _projectRepository.DeleteAsync(x => x.Id == id);
+            var saveResult = await _projectRepository.SaveAsync();
+            if (saveResult == false)
+                throw new Exception("Error saving project");
+
+            await _projectRepository.CommitTransactionAsync();
+            return ResponseResult.Ok();
+        }
+        catch (Exception ex)
+        {
+            await _projectRepository.RollbackTransactionAsync();
+            Debug.WriteLine(ex.Message);
+            return ResponseResult.Error($"Error deleting project :: {ex.Message}");
         }
     }
 }

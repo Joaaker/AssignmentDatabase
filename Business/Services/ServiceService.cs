@@ -26,14 +26,14 @@ public class ServiceService(IServiceRepository serviceRepository, IUnitTypeRepos
             {
                 unitEntity = new UnitTypeEntity { UnitType = form.UnitType };
                 await _unitTypeRepository.AddAsync(unitEntity);
-                var unitSaveResult = await _unitTypeRepository.SaveAsync();
+                bool unitSaveResult = await _unitTypeRepository.SaveAsync();
                 if (unitSaveResult == false)
                     throw new Exception("Error saving unit");
             }
 
             var serviceEntity = ServiceFactory.CreateEntity(form, unitEntity.Id);
             await _serviceRepository.AddAsync(serviceEntity);
-            var saveResult = await _serviceRepository.SaveAsync();
+            bool saveResult = await _serviceRepository.SaveAsync();
             if (saveResult == false)
                 throw new Exception("Error saving service");
 
@@ -44,7 +44,7 @@ public class ServiceService(IServiceRepository serviceRepository, IUnitTypeRepos
         {
             await _serviceRepository.RollbackTransactionAsync();
             Debug.WriteLine(ex.Message);
-            return ResponseResult.Error("Error retrieving service");
+            return ResponseResult.Error($"Error retrieving service :: {ex.Message}");
         }
     }
 
@@ -77,7 +77,7 @@ public class ServiceService(IServiceRepository serviceRepository, IUnitTypeRepos
         catch (Exception ex)
         {
             Debug.WriteLine(ex.Message);
-            return ResponseResult.Error("Error retrieving service");
+            return ResponseResult.Error("Error retrieving service by id");
         }
     }
 
@@ -94,11 +94,10 @@ public class ServiceService(IServiceRepository serviceRepository, IUnitTypeRepos
 
             await _serviceRepository.BeginTransactionAsync();
             entityToUpdate = ServiceFactory.CreateEntity(updateForm, entityToUpdate.UnitId);
-            var result = await _serviceRepository.UpdateAsync(x => x.Id == id, entityToUpdate);
-            if (result)
-                await _serviceRepository.SaveAsync();
-            else
-                throw new Exception("Error saving service");
+            await _serviceRepository.UpdateAsync(x => x.Id == id, entityToUpdate);
+            bool saveResult = await _serviceRepository.SaveAsync();
+            if (saveResult == false)
+                throw new Exception("Error saving");
 
             await _serviceRepository.CommitTransactionAsync();
             return ResponseResult.Ok();
@@ -107,7 +106,7 @@ public class ServiceService(IServiceRepository serviceRepository, IUnitTypeRepos
         {
             await _serviceRepository.RollbackTransactionAsync();
             Debug.WriteLine(ex.Message);
-            return ResponseResult.Error("Error updating service");
+            return ResponseResult.Error($"Error updating service :: {ex.Message}");
         }
     }
 
@@ -120,12 +119,11 @@ public class ServiceService(IServiceRepository serviceRepository, IUnitTypeRepos
                 return ResponseResult.NotFound("Service not found");
 
             await _serviceRepository.BeginTransactionAsync();
-            bool result = await _serviceRepository.DeleteAsync(x => x.Id == id);
-            if (result)
-                await _serviceRepository.SaveAsync();
-            else
-                throw new Exception("Error deleting service");
-
+            await _serviceRepository.DeleteAsync(x => x.Id == id);
+            bool saveResult = await _serviceRepository.SaveAsync();
+            if (saveResult == false)
+                throw new Exception("Error saving");
+        
             await _serviceRepository.CommitTransactionAsync();
             return ResponseResult.Ok();
         }
@@ -133,7 +131,7 @@ public class ServiceService(IServiceRepository serviceRepository, IUnitTypeRepos
         {
             await _serviceRepository.RollbackTransactionAsync();
             Debug.WriteLine(ex.Message);
-            return ResponseResult.Error("Error deleting service");
+            return ResponseResult.Error($"Error deleting service :: {ex.Message}");
         }
     }
 }

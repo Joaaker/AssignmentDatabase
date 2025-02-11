@@ -21,32 +21,21 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
             if (customerExist == true)
                 return ResponseResult.Error("Customer with that name already exist");
 
+            await _customerRepository.BeginTransactionAsync();
             var customerEntity = CustomerFactory.CreateEntity(form);
             await _customerRepository.AddAsync(customerEntity);
+            bool saveResult = await _customerRepository.SaveAsync();
+            if (saveResult == false)
+                throw new Exception("Error saving");
+
+            await _customerRepository.CommitTransactionAsync();
             return ResponseResult.Ok();
         }
         catch (Exception ex)
         {
+            await _customerRepository.RollbackTransactionAsync();
             Debug.WriteLine(ex.Message);
-            return ResponseResult.Error("Error creating customer");
-        }
-    }
-
-    public async Task<IResponseResult> DeleteCustomerAsync(int id)
-    {
-        try
-        {
-            var entity = await _customerRepository.GetAsync(x => x.Id == id);
-            if (entity == null)
-                return ResponseResult.NotFound("Customer not found");
-
-            bool result = await _customerRepository.DeleteAsync(x => x.Id == id);
-            return result ? ResponseResult.Ok() : ResponseResult.Error("Unable to delete customer");
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex.Message);
-            return ResponseResult.Error("Error deleting customer");
+            return ResponseResult.Error($"Error creating customer :: {ex.Message}");
         }
     }
 
@@ -94,15 +83,45 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
             if (entityToUpdate == null)
                 return ResponseResult.NotFound("Customer not found");
 
+            await _customerRepository.BeginTransactionAsync();
             entityToUpdate = CustomerFactory.CreateEntity(updateForm);
-            var result = await _customerRepository.UpdateAsync(x => x.Id == id, entityToUpdate);
+            await _customerRepository.UpdateAsync(x => x.Id == id, entityToUpdate);
+            bool saveResult = await _customerRepository.SaveAsync();
+            if (saveResult == false)
+                throw new Exception("Error saving");
 
-            return result ? ResponseResult.Ok() : ResponseResult.Error("Unable to update customer");
+            await _customerRepository.CommitTransactionAsync();
+            return ResponseResult.Ok();
         }
         catch (Exception ex)
         {
+            await _customerRepository.RollbackTransactionAsync();
             Debug.WriteLine(ex.Message);
-            return ResponseResult.Error("Error updating customer");
+            return ResponseResult.Error($"Error updating customer :: {ex.Message}");
+        }
+    }
+    public async Task<IResponseResult> DeleteCustomerAsync(int id)
+    {
+        try
+        {
+            var entity = await _customerRepository.GetAsync(x => x.Id == id);
+            if (entity == null)
+                return ResponseResult.NotFound("Customer not found");
+
+            await _customerRepository.BeginTransactionAsync();
+            await _customerRepository.DeleteAsync(x => x.Id == id);
+            bool saveResult = await _customerRepository.SaveAsync();
+            if (saveResult == false)
+                throw new Exception("Error saving");
+
+            await _customerRepository.CommitTransactionAsync();
+            return ResponseResult.Ok();
+        }
+        catch (Exception ex)
+        {
+            await _customerRepository.RollbackTransactionAsync();
+            Debug.WriteLine(ex.Message);
+            return ResponseResult.Error($"Error deleting customer :: {ex.Message}");
         }
     }
 }
