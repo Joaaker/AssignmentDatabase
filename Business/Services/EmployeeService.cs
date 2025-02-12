@@ -14,7 +14,6 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IRoleReposi
     private readonly IEmployeeRepository _employeeRepository = employeeRepository;
     private readonly IRoleRepository _roleRepository = roleRepository;
 
-    //ADD Transaction management
     public async Task<IResponseResult> CreateEmployeeAsync(EmployeeRegistrationForm form)
     {
         if (form == null)
@@ -23,19 +22,28 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IRoleReposi
         try
         {
             var roleEntity = await _roleRepository.GetAsync(r => r.RoleName == form.RoleName);
+            await _employeeRepository.BeginTransactionAsync();
             if (roleEntity == null)
             {
                 roleEntity = new RoleEntity { RoleName = form.RoleName };
                 await _roleRepository.AddAsync(roleEntity);
+                bool saveRoleResult = await _roleRepository.SaveAsync();
+                if (saveRoleResult == false)
+                    throw new Exception("Error saving role");
             }
 
             var employeeEntity = EmployeeFactory.CreateEntity(form, roleEntity.Id);
             await _employeeRepository.AddAsync(employeeEntity);
+            bool saveResult = await _employeeRepository.SaveAsync();
+            if (saveResult == false)
+                throw new Exception("Error saving employee");
 
+            await _employeeRepository.CommitTransactionAsync();
             return ResponseResult.Ok();
         }
         catch (Exception ex)
         {
+            await _employeeRepository.RollbackTransactionAsync();
             Debug.WriteLine(ex.Message);
             return ResponseResult.Error("Error creating employee");
         }
@@ -49,13 +57,20 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IRoleReposi
             if (entity == null)
                 return ResponseResult.NotFound("Employee not found");
 
-            bool result = await _employeeRepository.DeleteAsync(x => x.Id == id);
-            return result ? ResponseResult.Ok() : ResponseResult.Error("Unable to delete employee");
+            await _employeeRepository.BeginTransactionAsync();
+            await _employeeRepository.DeleteAsync(x => x.Id == id);
+            bool saveResult = await _employeeRepository.SaveAsync();
+            if (saveResult == false)
+                throw new Exception("Error saving");
+
+            await _employeeRepository.CommitTransactionAsync();
+            return ResponseResult.Ok();
         }
         catch (Exception ex)
         {
+            await _employeeRepository.RollbackTransactionAsync();
             Debug.WriteLine(ex.Message);
-            return ResponseResult.Error("Error deleting employee");
+            return ResponseResult.Error($"Error deleting employee :: {ex.Message}");
         }
     }
 
@@ -103,15 +118,23 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IRoleReposi
             if (entityToUpdate == null)
                 return ResponseResult.NotFound("Employee not found");
 
-            entityToUpdate = EmployeeFactory.CreateEntity(updateForm, entityToUpdate.Id);
-            var result = await _employeeRepository.UpdateAsync(x => x.Id == id, entityToUpdate);
+            await _employeeRepository.BeginTransactionAsync();
+            entityToUpdate = EmployeeFactory.CreateEntity(updateForm, entityToUpdate.Id, entityToUpdate.RoleId);
 
-            return result ? ResponseResult.Ok() : ResponseResult.Error("Unable to update employee");
+            await _employeeRepository.UpdateAsync(x => x.Id == id, entityToUpdate);
+
+            bool saveResult = await _employeeRepository.SaveAsync();
+            if (saveResult == false)
+                throw new Exception("Error saving");
+
+            await _employeeRepository.CommitTransactionAsync();
+            return ResponseResult.Ok();
         }
         catch (Exception ex)
         {
+            await _employeeRepository.RollbackTransactionAsync();
             Debug.WriteLine(ex.Message);
-            return ResponseResult.Error("Error updating employee");
+            return ResponseResult.Error($"Error updating employee :: {ex.Message}");
         }
     }
 }
