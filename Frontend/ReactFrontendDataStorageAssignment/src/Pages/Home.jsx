@@ -5,7 +5,6 @@ const Home = () => {
     return (
       <>
         <h1>Välkommen till Mattin-Lassei projektsystem</h1>
-        <h2>TEST</h2>
         <NavigationField/>
       </>
     );

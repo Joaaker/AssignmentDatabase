@@ -9,7 +9,7 @@ function AddServiceBtn() {
   };
 
   return (
-    <button onClick={handleClick}>Add New Service</button>
+    <button className='btn' onClick={handleClick}>Lägg till ny tjänst</button>
   );
 }
 

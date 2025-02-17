@@ -1,0 +1,83 @@
+body{
+    background-color: lightgray;
+}
+
+table{
+    margin: 10px;
+}
+
+.tableTitle{
+    padding: 5px 1.5rem;
+    background-color: lightblue;
+}
+
+td{
+    padding-right: 5px;
+}
+
+.long{
+    padding: 5px 3rem;
+}
+
+td.align-center{
+    text-align: center;
+}
+
+.tableContent{
+    padding: .3rem .1rem;
+}
+
+.btn{
+    margin: .5rem;
+    padding: .5rem;
+}
+
+button {
+    cursor: pointer;
+  }
+  
+.btnContainer button{
+    background-color: #7289da;
+    border-radius: .5rem;
+    font-weight: 500;
+    border: none;
+    margin: 1rem;
+    padding: 1rem;
+}
+
+td button{
+    width: 100%;
+}
+.container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+form{
+    padding: 1rem;
+    align-items: center;
+}
+
+.padding-1{
+    padding: 1rem;
+}
+
+.error{
+    color: red;
+    font-weight: 500;
+}
+
+.deleteBtn{
+    margin: 1rem;
+    padding: .5rem;
+    background-color: #C70000;
+    border: none;
+    border-radius: .5rem;
+    font-weight: 540;
+}
+
+.flex-column{
+    display: flex;
+    flex-direction: column;
+}

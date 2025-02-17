@@ -7,7 +7,7 @@ import ListAllServicesBtn from './ListAllServicesBtn'
 const NavigationField = () => {
   return (
     <>
-        <div className='container'> 
+        <div className='btnContainer'> 
             <ListAllProjectsBtn/>
             <ListAllEmployeesBtn/>
             <ListAllCustomersBtn/>

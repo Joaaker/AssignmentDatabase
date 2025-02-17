@@ -9,7 +9,7 @@ function AddEmployeeBtn() {
   };
 
   return (
-    <button onClick={handleClick}>Add New Employee</button>
+    <button className='btn' onClick={handleClick}>Lägg till ny anställd</button>
   );
 }
 

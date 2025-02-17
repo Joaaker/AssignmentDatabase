@@ -4,10 +4,10 @@ import { useNavigate } from 'react-router-dom';
 function ListAllServicesBtn() {
   const navigate = useNavigate();
 
-  const handleClick = () => {navigate('/ServiceList');};
+  const handleClick = () => {navigate('/Service');};
 
   return (
-    <button onClick={handleClick}>Se alla och hantera tjänster</button>
+    <button onClick={handleClick}>Visa och hantera tjänster</button>
   );
 }
 

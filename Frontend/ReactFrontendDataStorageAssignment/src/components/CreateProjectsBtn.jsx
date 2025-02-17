@@ -9,7 +9,7 @@ function CreateProjectsBtn() {
   };
 
   return (
-    <button onClick={handleClick}>Create New Project</button>
+    <button className='btn' onClick={handleClick}>Skapa nytt projekt</button>
   );
 }
 

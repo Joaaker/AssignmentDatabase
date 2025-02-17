@@ -5,11 +5,11 @@ function AddCustomerBtn() {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/AddNewCustomer');
+    navigate('/');
   };
 
   return (
-    <button className='btn' onClick={handleClick}>Lägg till ny kund</button>
+    <button className='btn' onClick={handleClick}>Gå tillbaka till startsidan</button>
   );
 }
 
