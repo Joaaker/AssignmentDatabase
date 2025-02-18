@@ -12,6 +12,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     public DbSet<EmployeeEntity> Employees { get; set; }
     public DbSet<ServiceEntity> Services { get; set; }
     public DbSet<ProjectEntity> Projects { get; set; }
+    public DbSet<ProjectServiceJunctionEntity> ProjectServices { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
