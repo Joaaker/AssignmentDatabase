@@ -14,6 +14,7 @@ builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("Data Source=(Loc
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<IProjectServiceRepository, ProjectServiceRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 builder.Services.AddScoped<IStatusRepository, StatusRepository>();
