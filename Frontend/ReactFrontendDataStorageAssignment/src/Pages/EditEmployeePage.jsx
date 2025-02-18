@@ -4,7 +4,9 @@ import HomeBtn from '../components/HomeBtn';
 
 const EditEmployee = () => {
   const { id } = useParams();
-  const [firstName, setFirstName] = useState(''); const [lastName, setLastName] = useState(''); const [roleName, setRoleName] = useState('');
+  const [firstName, setFirstName] = useState(''); 
+  const [lastName, setLastName] = useState(''); 
+  const [roleName, setRoleName] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -31,7 +33,7 @@ const EditEmployee = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const updateForm = { firstName, lastName };
+    const updateForm = { firstName, lastName, roleName };
 
     try {
       const response = await fetch(`/api/Employee/${id}`, {
@@ -67,7 +69,7 @@ const EditEmployee = () => {
     <div className="container">
       <h1>Redigera anställd</h1>
       <HomeBtn />
-      <p>Anställd-ID: {id}</p>
+      <p>Anställningsnummer: {id}</p>
       <form id="employeeForm" onSubmit={handleSubmit}>
         <div className='flex-column align-center'>
           <div className='padding-1'>

@@ -19,38 +19,38 @@ const NewEmployee = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newEmployee),
       });
-
       if (!response.ok) {
         throw new Error(`Fel vid skapande av anställd: ${response.statusText}`);
       }
-
       navigate('/Employee');
     } catch (err) {
       console.error('Error creating employee:', err);
       setError(err.message);
     }
-  }
+  };
 
   return (
     <div className="container">
       <h1>Skapa en ny anställd</h1>
       <HomeBtn />
       <form id="employeeForm" onSubmit={handleSubmit}>
-        <div className='padding-1'>
-          <label htmlFor="firstName">Förnamn: </label>
-          <input type="text" id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} required/>
+        <div>
+          <label htmlFor="firstName">Förnamn:</label>
+          <input type="text" id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
         </div>
-        <div className='padding-1'>
-          <label htmlFor="lastName">Efternamn: </label>
-          <input type="text" id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} required/>
+        <div>
+          <label htmlFor="lastName">Efternamn:</label>
+          <input type="text" id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
         </div>
-        <div className='padding-1'>
-
-        </div>{error && <div className="error">{error}</div>}
+        <div>
+          <label htmlFor="roleName">Roll:</label>
+          <input type="text" id="roleName" value={roleName} onChange={(e) => setRoleName(e.target.value)} required />
+        </div>
+        {error && <div className="error">{error}</div>}
       </form>
-      <button className='green' form="employeeForm" type="submit">Lägg till anställd</button>
+      <button form="employeeForm" type="submit">Skapa anställd</button>
     </div>
   )
 }
 
-export default NewEmployee;
+export default NewEmployee
