@@ -7,9 +7,10 @@ using Data.Interfaces;
 
 namespace Business.Services;
 
-public class ProjectService(IProjectRepository projectRepository) : IProjectService
+public class ProjectService(IProjectRepository projectRepository, IProjectServiceRepository projectServiceRepository) : IProjectService
 {
     private readonly IProjectRepository _projectRepository = projectRepository;
+    private readonly IProjectServiceRepository _projectServiceRepository = projectServiceRepository;
 
     public async Task<IResponseResult> CreateProjectAsync(ProjectRegistrationForm form)
     {
@@ -23,12 +24,20 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
                 return ResponseResult.Error("Project with that name already exist");
 
             await _projectRepository.BeginTransactionAsync();
-            var projectEntity = ProjectFactory.CreateEntity(form);
-            await _projectRepository.AddAsync(projectEntity);
+            var projectToBeCreated = ProjectFactory.CreateEntity(form);
+            var newlyCreatedProject = await _projectRepository.AddAsync(projectToBeCreated);
             var saveResult = await _projectRepository.SaveAsync();
             if (saveResult == false)
                 throw new Exception("Error saving project");
 
+            foreach (int serviceId in form.ServiceIds) 
+            {
+                var projectServiceEntity = ProjectServiceFactory.Create(newlyCreatedProject.Id, serviceId);
+                await _projectServiceRepository.AddAsync(projectServiceEntity);
+            }
+            var psSaveResult = await _projectRepository.SaveAsync();
+            if (psSaveResult == false)
+                throw new Exception("Error saving ProjectService");
 
             await _projectRepository.CommitTransactionAsync();
             return ResponseResult.Ok();
