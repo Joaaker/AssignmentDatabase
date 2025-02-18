@@ -12,29 +12,29 @@ public class ProjectServiceService(IProjectServiceRepository projectServiceRepos
 {
     private readonly IProjectServiceRepository _projectServiceRepository = projectServiceRepository;
 
-    public async Task<IResponseResult> CreateProjectServiceAsync(ProjectServiceRegistrationForm form)
-    {
-        if (form == null)
-            return ResponseResult.BadRequest("Invalid form");
-        try
-        {
-            await _projectServiceRepository.BeginTransactionAsync();
-            var projectServiceJunctionEntity = ProjectServiceFactory.Create(form);
-            await _projectServiceRepository.AddAsync(projectServiceJunctionEntity);
-            var saveResult = await _projectServiceRepository.SaveAsync();
-            if (saveResult == false)
-                throw new Exception("Error saving ProjectService");
+    //public async Task<IResponseResult> CreateProjectServiceAsync(ProjectServiceRegistrationForm form)
+    //{
+    //    if (form == null)
+    //        return ResponseResult.BadRequest("Invalid form");
+    //    try
+    //    {
+    //        await _projectServiceRepository.BeginTransactionAsync();
+    //        var projectServiceJunctionEntity = ProjectServiceFactory.Create(form);
+    //        await _projectServiceRepository.AddAsync(projectServiceJunctionEntity);
+    //        var saveResult = await _projectServiceRepository.SaveAsync();
+    //        if (saveResult == false)
+    //            throw new Exception("Error saving ProjectService");
 
-            await _projectServiceRepository.CommitTransactionAsync();
-            return ResponseResult.Ok();
-        }
-        catch (Exception ex)
-        {
-            await _projectServiceRepository.RollbackTransactionAsync();
-            Debug.WriteLine(ex.Message);
-            return ResponseResult.Error($"Error creating project :: {ex.Message}");
-        }
-    }
+    //        await _projectServiceRepository.CommitTransactionAsync();
+    //        return ResponseResult.Ok();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        await _projectServiceRepository.RollbackTransactionAsync();
+    //        Debug.WriteLine(ex.Message);
+    //        return ResponseResult.Error($"Error creating project :: {ex.Message}");
+    //    }
+    //}
 
     public Task<IResponseResult> DeleteProjectServiceAsync(int id)
     {
@@ -51,8 +51,8 @@ public class ProjectServiceService(IProjectServiceRepository projectServiceRepos
         throw new NotImplementedException();
     }
 
-    public Task<IResponseResult> UpdateProjectServiceAsync(int id, ProjectServiceRegistrationForm updateForm)
-    {
-        throw new NotImplementedException();
-    }
+    //public Task<IResponseResult> UpdateProjectServiceAsync(int id, ProjectServiceRegistrationForm updateForm)
+    //{
+    //    throw new NotImplementedException();
+    //}
 }

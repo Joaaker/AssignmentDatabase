@@ -1,13 +1,12 @@
-﻿using Business.Dtos;
-using Data.Entities;
+﻿using Data.Entities;
 
 namespace Business.Factories;
 
 public static class ProjectServiceFactory
 {
-    public static ProjectServiceJunctionEntity Create(ProjectServiceRegistrationForm form) => new()
+    public static ProjectServiceJunctionEntity Create(int projectId, int serviceId) => new()
     {
-        ProjectId = form.ProjectId,
-        ServiceId = form.ServiceId,
+        ProjectId =projectId,
+        ServiceId = serviceId,
     };
 }

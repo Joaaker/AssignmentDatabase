@@ -12,23 +12,23 @@ public class ProjectServiceController(IProjectServiceService ProjectServiceServi
 {
     private readonly IProjectServiceService _ProjectServiceService = ProjectServiceService;
 
-    [HttpPost]
-    public async Task<IActionResult> CreateProjectService([FromBody] ProjectServiceRegistrationForm form)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+    //[HttpPost]
+    //public async Task<IActionResult> CreateProjectService([FromBody] ProjectServiceRegistrationForm form)
+    //{
+    //    if (!ModelState.IsValid)
+    //        return BadRequest(ModelState);
 
-        var response = await _ProjectServiceService.CreateProjectServiceAsync(form);
+    //    var response = await _ProjectServiceService.CreateProjectServiceAsync(form);
 
-        return response.StatusCode switch
-        {
-            200 => Ok(response),
-            400 => BadRequest(response.ErrorMessage),
-            409 => Conflict(response.ErrorMessage),
-            500 => Problem(response.ErrorMessage),
-            _ => Problem("Something went wrong!"),
-        };
-    }
+    //    return response.StatusCode switch
+    //    {
+    //        200 => Ok(response),
+    //        400 => BadRequest(response.ErrorMessage),
+    //        409 => Conflict(response.ErrorMessage),
+    //        500 => Problem(response.ErrorMessage),
+    //        _ => Problem("Something went wrong!"),
+    //    };
+    //}
 
     [HttpGet]
     public async Task<IActionResult> GetAllProjectServices()
@@ -64,22 +64,22 @@ public class ProjectServiceController(IProjectServiceService ProjectServiceServi
         };
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateProjectService(int projectId, ProjectServiceRegistrationForm updateForm)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest();
+    //[HttpPut("{id}")]
+    //public async Task<IActionResult> UpdateProjectService(int projectId, ProjectServiceRegistrationForm updateForm)
+    //{
+    //    if (!ModelState.IsValid)
+    //        return BadRequest();
 
-        var response = await _ProjectServiceService.UpdateProjectServiceAsync(projectId, updateForm);
-        return response.StatusCode switch
-        {
-            200 => Ok(response),
-            400 => BadRequest(response.ErrorMessage),
-            409 => Conflict(response.ErrorMessage),
-            500 => Problem(response.ErrorMessage),
-            _ => Problem("Something went wrong!"),
-        };
-    }
+    //    var response = await _ProjectServiceService.UpdateProjectServiceAsync(projectId, updateForm);
+    //    return response.StatusCode switch
+    //    {
+    //        200 => Ok(response),
+    //        400 => BadRequest(response.ErrorMessage),
+    //        409 => Conflict(response.ErrorMessage),
+    //        500 => Problem(response.ErrorMessage),
+    //        _ => Problem("Something went wrong!"),
+    //    };
+    //}
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProjectServiceById(int id)

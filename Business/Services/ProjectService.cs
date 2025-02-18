@@ -29,6 +29,7 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
             if (saveResult == false)
                 throw new Exception("Error saving project");
 
+
             await _projectRepository.CommitTransactionAsync();
             return ResponseResult.Ok();
         }

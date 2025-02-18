@@ -1,6 +1,4 @@
-﻿using Business.Models;
-
-namespace Business.Dtos;
+﻿namespace Business.Dtos;
 
 public class ProjectRegistrationForm
 {
@@ -11,4 +9,5 @@ public class ProjectRegistrationForm
     public int ProjectStatusId { get; set; }
     public int CustomerId { get; set; }
     public int ProjectManagerId { get; set; }
+    public List<int> ServiceIds { get; set; } = [];
 }
