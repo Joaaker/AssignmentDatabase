@@ -114,14 +114,14 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IRoleReposi
 
         try
         {
-            var entityToUpdate = await _employeeRepository.GetAsync(x => x.Id == id);
-            if (entityToUpdate == null)
+            var employeeToUpdate = await _employeeRepository.GetAsync(x => x.Id == id);
+            if (employeeToUpdate == null)
                 return ResponseResult.NotFound("Employee not found");
 
             await _employeeRepository.BeginTransactionAsync();
-            entityToUpdate = EmployeeFactory.CreateEntity(updateForm, entityToUpdate.Id, entityToUpdate.RoleId);
+            employeeToUpdate = EmployeeFactory.CreateEntity(updateForm, employeeToUpdate.Id, employeeToUpdate.Role.Id);
 
-            await _employeeRepository.UpdateAsync(x => x.Id == id, entityToUpdate);
+            await _employeeRepository.UpdateAsync(x => x.Id == id, employeeToUpdate);
 
             bool saveResult = await _employeeRepository.SaveAsync();
             if (saveResult == false)
