@@ -85,7 +85,6 @@ public class ProjectService(IProjectRepository projectRepository, IProjectServic
         }
     }
 
-    //To do, gör så att det går at uppdatera projekt med nya services
     public async Task<IResponseResult> UpdateProjectAsync(int id, ProjectRegistrationForm updateForm)
     {
         if (updateForm == null)
@@ -93,16 +92,26 @@ public class ProjectService(IProjectRepository projectRepository, IProjectServic
 
         try
         {
-            var entityToUpdate = await _projectRepository.GetAsync(x => x.Id == id);
-            if (entityToUpdate == null)
+            var projectToUpdate = await _projectRepository.GetAsync(x => x.Id == id);
+            if (projectToUpdate == null)
                 return ResponseResult.NotFound("Project not found");
 
             await _projectRepository.BeginTransactionAsync();
-            entityToUpdate = ProjectFactory.CreateEntity(updateForm);
-            await _projectRepository.UpdateAsync(x => x.Id == id, entityToUpdate);
+            projectToUpdate = ProjectFactory.CreateEntity(updateForm);
+            await _projectRepository.UpdateAsync(x => x.Id == id, projectToUpdate);
             var saveResult = await _projectRepository.SaveAsync();
             if (saveResult == false)
-                throw new Exception("Error saving project");
+                throw new Exception("Error saving updated project");
+
+            foreach (int serviceId in updateForm.ServiceIds)
+            {
+                var projectServiceEntity = ProjectServiceFactory.Create(projectToUpdate.Id, serviceId);
+                await _projectServiceRepository.UpdateAsync(x => x.ProjectId == id 
+                    && x.ServiceId == serviceId, projectServiceEntity);
+            }
+            var psSaveResult = await _projectRepository.SaveAsync();
+            if (psSaveResult == false)
+                throw new Exception("Error saving updated ProjectService");
 
             await _projectRepository.CommitTransactionAsync();
             return ResponseResult.Ok();
