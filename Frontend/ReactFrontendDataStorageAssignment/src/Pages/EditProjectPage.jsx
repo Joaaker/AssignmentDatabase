@@ -73,7 +73,8 @@ const EditProjectPage = () => {
         setProjectStatusId(data.projectStatusId ? data.projectStatusId.toString() : '');
         setCustomerId(data.customerId ? data.customerId.toString() : '');
         setProjectManagerId(data.projectManagerId ? data.projectManagerId.toString() : '');
-        setSelectedServiceIds(data.serviceIds || []);
+        // Konvertera serviceIds till nummer
+        setSelectedServiceIds((data.serviceIds || []).map(Number));
       } catch (err) {
         console.error('Error fetching project:', err);
         setError(err.message);
@@ -181,28 +182,38 @@ const EditProjectPage = () => {
           <label htmlFor="projectStatusId">Projekstatus:</label>
           <select id="projectStatusId" value={projectStatusId} onChange={(e) => setProjectStatusId(e.target.value)} required>
             <option value="">Välj status</option>
-            {projectStatuses.map(status => <option key={status.id} value={status.id.toString()}>{status.statusName}</option>)}
+            {projectStatuses.map(status => (
+              <option key={status.id} value={status.id.toString()}>{status.statusName}</option>
+            ))}
           </select>
         </div>
         <div>
           <label htmlFor="customerId">Kund:</label>
           <select id="customerId" value={customerId} onChange={(e) => setCustomerId(e.target.value)} required>
             <option value="">Välj kund</option>
-            {customers.map(customer => <option key={customer.id} value={customer.id.toString()}>{customer.customerName}</option>)}
+            {customers.map(customer => (
+              <option key={customer.id} value={customer.id.toString()}>{customer.customerName}</option>
+            ))}
           </select>
         </div>
         <div>
           <label htmlFor="projectManagerId">Projektansvarig: </label>
           <select id="projectManagerId" value={projectManagerId} onChange={(e) => setProjectManagerId(e.target.value)} required>
             <option value="">Välj projektansvarig</option>
-            {employees.map(employee => <option key={employee.id} value={employee.id.toString()}>{employee.firstName} {employee.lastName}</option>)}
+            {employees.map(employee => (
+              <option key={employee.id} value={employee.id.toString()}>{employee.firstName} {employee.lastName}</option>
+            ))}
           </select>
         </div>
         <div>
           <label htmlFor="serviceDropdown">Välj tjänst:</label>
           <select id="serviceDropdown" value={serviceSelection} onChange={handleServiceSelect}>
             <option value="">Välj tjänst</option>
-            {services.map(service => <option key={service.id} value={service.id.toString()}>{service.serviceName}, {service.unitType}</option>)}
+            {services.map(service => (
+              <option key={service.id} value={service.id.toString()}>
+                {service.serviceName}, {service.unitType}
+              </option>
+            ))}
           </select>
         </div>
         {selectedServices.length > 0 && (
@@ -221,7 +232,9 @@ const EditProjectPage = () => {
                   <td>{service.serviceName}</td>
                   <td className="align-center">{service.price}kr</td>
                   <td>{service.unitType}</td>
-                  <td><button type="button" onClick={() => handleRemoveService(service.id)}>Ta bort</button></td>
+                  <td>
+                    <button type="button" onClick={() => handleRemoveService(service.id)}>Ta bort</button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -232,7 +245,7 @@ const EditProjectPage = () => {
       </form>
       <button className="deleteBtn" onClick={handleDelete} type="button">Radera projekt</button>
     </div>
-  )
-}
+  );
+};
 
 export default EditProjectPage
