@@ -23,6 +23,7 @@ builder.Services.AddScoped<IUnitTypeRepository, UnitTypeRepository>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IProjectServiceService, ProjectServiceService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 
 var app = builder.Build();

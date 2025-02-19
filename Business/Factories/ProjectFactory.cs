@@ -4,7 +4,7 @@ using Data.Entities;
 
 namespace Business.Factories;
 
-public class ProjectFactory
+public static class ProjectFactory
 {
     public static ProjectEntity CreateEntity(ProjectRegistrationForm registrationForm) => new()
     {
@@ -38,4 +38,14 @@ public class ProjectFactory
         })
         .ToList()
     };
+    public static void UpdateEntity(ProjectEntity existingProject, ProjectRegistrationForm updateForm)
+    {
+        existingProject.Title = updateForm.Title;
+        existingProject.Description = updateForm.Description;
+        existingProject.StartDate = updateForm.StartDate;
+        existingProject.EndDate = updateForm.EndDate;
+        existingProject.StatusId = updateForm.ProjectStatusId;
+        existingProject.CustomerId = updateForm.CustomerId;
+        existingProject.ProjectManagerId = updateForm.ProjectManagerId;
+    }
 }

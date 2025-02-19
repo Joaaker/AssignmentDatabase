@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.Serialization;
 using Business.Dtos;
 using Business.Factories;
 using Business.Interfaces;
@@ -7,10 +8,11 @@ using Data.Interfaces;
 
 namespace Business.Services;
 
-public class ProjectService(IProjectRepository projectRepository, IProjectServiceRepository projectServiceRepository) : IProjectService
+public class ProjectService(IProjectRepository projectRepository, IProjectServiceRepository projectServiceRepository, IProjectServiceService projectServiceService) : IProjectService
 {
     private readonly IProjectRepository _projectRepository = projectRepository;
     private readonly IProjectServiceRepository _projectServiceRepository = projectServiceRepository;
+    private readonly IProjectServiceService _projectServiceService = projectServiceService;
 
     public async Task<IResponseResult> CreateProjectAsync(ProjectRegistrationForm form)
     {
@@ -35,6 +37,7 @@ public class ProjectService(IProjectRepository projectRepository, IProjectServic
                 var projectServiceEntity = ProjectServiceFactory.Create(newlyCreatedProject.Id, serviceId);
                 await _projectServiceRepository.AddAsync(projectServiceEntity);
             }
+
             var psSaveResult = await _projectRepository.SaveAsync();
             if (psSaveResult == false)
                 throw new Exception("Error saving ProjectService");
@@ -97,21 +100,20 @@ public class ProjectService(IProjectRepository projectRepository, IProjectServic
                 return ResponseResult.NotFound("Project not found");
 
             await _projectRepository.BeginTransactionAsync();
-            projectToUpdate = ProjectFactory.CreateEntity(updateForm);
+            ProjectFactory.UpdateEntity(projectToUpdate, updateForm);
             await _projectRepository.UpdateAsync(x => x.Id == id, projectToUpdate);
             var saveResult = await _projectRepository.SaveAsync();
             if (saveResult == false)
                 throw new Exception("Error saving updated project");
 
-            foreach (int serviceId in updateForm.ServiceIds)
-            {
-                var projectServiceEntity = ProjectServiceFactory.Create(projectToUpdate.Id, serviceId);
-                await _projectServiceRepository.UpdateAsync(x => x.ProjectId == id 
-                    && x.ServiceId == serviceId, projectServiceEntity);
-            }
-            var psSaveResult = await _projectRepository.SaveAsync();
-            if (psSaveResult == false)
-                throw new Exception("Error saving updated ProjectService");
+            var existingServiceIds = projectToUpdate.ProjectServices
+                .Select(ps => ps.ServiceId)
+                .ToList();
+
+            var projectServicesUpdate = _projectServiceService.UpdateProjectServicesAsync(
+                id, existingServiceIds, updateForm.ServiceIds);
+            if (projectServicesUpdate.Result.Success == false)
+                throw new Exception("Error updating ProjectServices");
 
             await _projectRepository.CommitTransactionAsync();
             return ResponseResult.Ok();
