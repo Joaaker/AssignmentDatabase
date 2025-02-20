@@ -81,20 +81,20 @@ public class ServiceService(IServiceRepository serviceRepository, IUnitTypeRepos
         }
     }
 
-    public async Task<IResponseResult> UpdateServiceAsync(int id, ServiceRegistrationForm updateForm)
+    public async Task<IResponseResult> UpdateServiceAsync(int serviceId, ServiceRegistrationForm updateForm)
     {
         if (updateForm == null)
             return ResponseResult.BadRequest("Invalid form");
 
         try
         {
-            var entityToUpdate = await _serviceRepository.GetAsync(x => x.Id == id);
+            var entityToUpdate = await _serviceRepository.GetAsync(x => x.Id == serviceId);
             if (entityToUpdate == null)
                 return ResponseResult.NotFound("Service not found");
 
             await _serviceRepository.BeginTransactionAsync();
-            entityToUpdate = ServiceFactory.CreateEntity(updateForm, entityToUpdate.UnitId);
-            await _serviceRepository.UpdateAsync(x => x.Id == id, entityToUpdate);
+            entityToUpdate = ServiceFactory.CreateEntity(updateForm, serviceId, entityToUpdate.UnitId);
+            await _serviceRepository.UpdateAsync(x => x.Id == serviceId, entityToUpdate);
             bool saveResult = await _serviceRepository.SaveAsync();
             if (saveResult == false)
                 throw new Exception("Error saving");

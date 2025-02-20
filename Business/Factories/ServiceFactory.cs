@@ -14,6 +14,14 @@ public class ServiceFactory
         UnitId = unitId,
     };
 
+    public static ServiceEntity CreateEntity(ServiceRegistrationForm registrationForm, int serviceId, int unitId) => new()
+    {
+        Id = serviceId,
+        ServiceName = registrationForm.ServiceName,
+        Price = registrationForm.Price,
+        UnitId = unitId,
+    };
+
     public static ServiceModel CreateModel(ServiceEntity entity) => new()
     {
         Id = entity.Id,
