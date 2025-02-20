@@ -59,7 +59,7 @@ const CustomerPage = () => {
         </tbody>
       </table>
     </>
-  );
-};
+  )
+}
 
-export default CustomerPage;
+export default CustomerPage

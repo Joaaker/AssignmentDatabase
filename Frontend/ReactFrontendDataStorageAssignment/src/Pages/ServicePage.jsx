@@ -37,7 +37,6 @@ const ServicePage = () => {
         <HomeBtn/>
         <AddServiceBtn />
       </div>
-
       <table>
         <thead>
           <tr>
@@ -61,7 +60,7 @@ const ServicePage = () => {
         </tbody>
       </table>
     </>
-  );
-};
+  )
+}
 
-export default ServicePage;
+export default ServicePage

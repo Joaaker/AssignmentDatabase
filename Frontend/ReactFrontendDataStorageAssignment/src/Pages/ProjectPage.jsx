@@ -86,7 +86,7 @@ const ProjectPage = () => {
         </tbody>
       </table>
     </>
-  );
-};
+  )
+}
 
-export default ProjectPage;
+export default ProjectPage

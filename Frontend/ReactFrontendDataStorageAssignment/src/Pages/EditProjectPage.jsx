@@ -6,7 +6,6 @@ const EditProjectPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // State för projektdata
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -19,7 +18,6 @@ const EditProjectPage = () => {
   const [serviceSelection, setServiceSelection] = useState('');
   const [error, setError] = useState(null);
 
-  // State för dropdown-data
   const [customers, setCustomers] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [services, setServices] = useState([]);
@@ -30,7 +28,6 @@ const EditProjectPage = () => {
     { id: 3, statusName: 'Avslutat' },
   ];
 
-  // Hämta dropdown-data
   useEffect(() => {
     const fetchDropdownData = async () => {
       try {
@@ -56,7 +53,6 @@ const EditProjectPage = () => {
     fetchDropdownData();
   }, []);
 
-  // Hämta projektdata
   useEffect(() => {
     const fetchProject = async () => {
       try {
@@ -73,7 +69,6 @@ const EditProjectPage = () => {
         setProjectStatusId(data.projectStatusId ? data.projectStatusId.toString() : '');
         setCustomerId(data.customerId ? data.customerId.toString() : '');
         setProjectManagerId(data.projectManagerId ? data.projectManagerId.toString() : '');
-        // Konvertera serviceIds till nummer
         setSelectedServiceIds((data.serviceIds || []).map(Number));
       } catch (err) {
         console.error('Error fetching project:', err);
@@ -83,7 +78,6 @@ const EditProjectPage = () => {
     fetchProject();
   }, [id]);
 
-  // Mappa inhämtade serviceIds till fullständiga service-objekt
   useEffect(() => {
     if (services.length > 0) {
       const selected = services.filter(service => selectedServiceIds.includes(service.id));
@@ -91,7 +85,6 @@ const EditProjectPage = () => {
     }
   }, [services, selectedServiceIds]);
 
-  // Hantera val av tjänst
   const handleServiceSelect = (e) => {
     const serviceId = parseInt(e.target.value);
     if (!serviceId) return;
@@ -103,13 +96,11 @@ const EditProjectPage = () => {
     setServiceSelection('');
   };
 
-  // Ta bort vald tjänst
   const handleRemoveService = (id) => {
     setSelectedServices(prev => prev.filter(service => service.id !== id));
     setSelectedServiceIds(prev => prev.filter(sId => sId !== id));
   };
 
-  // Uppdatera projekt
   const handleSubmit = async (e) => {
     e.preventDefault();
     const updatedProject = {
@@ -141,7 +132,6 @@ const EditProjectPage = () => {
     }
   };
 
-  // Radera projekt
   const handleDelete = async () => {
     if (!window.confirm('Är du säker på att du vill radera detta projekt?')) return;
     try {
@@ -245,7 +235,7 @@ const EditProjectPage = () => {
       </form>
       <button className="deleteBtn" onClick={handleDelete} type="button">Radera projekt</button>
     </div>
-  );
-};
+  )
+}
 
 export default EditProjectPage

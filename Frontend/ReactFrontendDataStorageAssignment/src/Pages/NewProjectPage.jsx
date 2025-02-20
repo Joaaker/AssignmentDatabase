@@ -22,7 +22,6 @@ const NewProject = () => {
   const [employees, setEmployees] = useState([]);
   const [services, setServices] = useState([]);
 
-  // Ny state för tjänsteval
   const [serviceSelection, setServiceSelection] = useState('');
   const [selectedServices, setSelectedServices] = useState([]);
 
@@ -57,17 +56,15 @@ const NewProject = () => {
     fetchData();
   }, []);
 
-  // När en tjänst väljs från dropdown
   const handleServiceSelect = (e) => {
     const serviceId = parseInt(e.target.value);
     if (!serviceId) return;
 
     const selectedService = services.find((service) => service.id === serviceId);
-    // Om tjänsten inte redan är vald, lägg till den
+
     if (selectedService && !selectedServices.find((s) => s.id === serviceId)) {
       setSelectedServices((prev) => [...prev, selectedService]);
     }
-    // Återställ dropdownen
     setServiceSelection('');
   };
 

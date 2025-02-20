@@ -63,7 +63,7 @@ const EmployeePage = () => {
         </tbody>
       </table>
     </>
-  );
-};
+  )
+}
 
-export default EmployeePage;
+export default EmployeePage

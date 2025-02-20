@@ -7,7 +7,7 @@ const Home = () => {
         <h1>Välkommen till Mattin-Lassei projektsystem</h1>
         <NavigationField/>
       </>
-    );
-  };
+    )
+  }
   
-  export default Home;
+  export default Home
