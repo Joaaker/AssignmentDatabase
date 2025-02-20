@@ -49,7 +49,9 @@ const DetailedProjectViewPage = () => {
           throw new Error(`Fel vid hämtning av projekt: ${response.statusText}`);
         }
         const projectData = await response.json();
+
         setProject(projectData.data || projectData);
+        console.log("Project data:", projectData);
       } catch (err) {
         console.error('Error fetching project:', err);
         setError(err.message);

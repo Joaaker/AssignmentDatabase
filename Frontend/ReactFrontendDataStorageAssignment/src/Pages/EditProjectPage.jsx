@@ -70,6 +70,7 @@ const EditProjectPage = () => {
         setCustomerId(data.customerId ? data.customerId.toString() : '');
         setProjectManagerId(data.projectManagerId ? data.projectManagerId.toString() : '');
         setSelectedServiceIds((data.serviceIds || []).map(Number));
+        console.log("Project data:", projectData);
       } catch (err) {
         console.error('Error fetching project:', err);
         setError(err.message);
