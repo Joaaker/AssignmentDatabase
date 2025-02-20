@@ -5,7 +5,6 @@ import HomeBtn from '../components/HomeBtn';
 const EditProjectPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -42,6 +41,7 @@ const EditProjectPage = () => {
         const customersData = await customersRes.json();
         const employeesData = await employeesRes.json();
         const servicesData = await servicesRes.json();
+        console.log({ customersData, employeesData, servicesData });
         setCustomers(customersData.data || customersData);
         setEmployees(employeesData.data || employeesData);
         setServices(servicesData.data || servicesData);
@@ -67,10 +67,11 @@ const EditProjectPage = () => {
         setStartDate(data.startDate || '');
         setEndDate(data.endDate || '');
         setProjectStatusId(data.projectStatusId ? data.projectStatusId.toString() : '');
-        setCustomerId(data.customerId ? data.customerId.toString() : '');
+        setCustomerId(data.customerName);
         setProjectManagerId(data.projectManagerId ? data.projectManagerId.toString() : '');
         setSelectedServiceIds((data.serviceIds || []).map(Number));
         console.log("Project data:", projectData);
+        console.log(data);
       } catch (err) {
         console.error('Error fetching project:', err);
         setError(err.message);
@@ -183,7 +184,7 @@ const EditProjectPage = () => {
           <select id="customerId" value={customerId} onChange={(e) => setCustomerId(e.target.value)} required>
             <option value="">Välj kund</option>
             {customers.map(customer => (
-              <option key={customer.id} value={customer.id.toString()}>{customer.customerName}</option>
+              <option key={customer.id} value={customer.customerName}>{customer.customerName}</option>
             ))}
           </select>
         </div>
