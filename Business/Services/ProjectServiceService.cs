@@ -1,11 +1,7 @@
-﻿using Business.Dtos;
-using Business.Factories;
+﻿using Business.Factories;
 using Business.Interfaces;
 using Business.Models;
-using Data.Entities;
 using Data.Interfaces;
-using Data.Repositories;
-using System.ComponentModel.Design;
 using System.Diagnostics;
 
 namespace Business.Services;
@@ -47,6 +43,9 @@ public class ProjectServiceService(IProjectServiceRepository projectServiceRepos
         //Transactions are handled in ProjectService.UpdateProjectAsync
         try
         {
+            if (currentServiceIds.Count == 0 && newServiceIds.Count == 0)
+                return ResponseResult.Ok();
+
             var toRemove = currentServiceIds.Except(newServiceIds).ToList();
             var toAdd = newServiceIds.Except(currentServiceIds).ToList();
 
@@ -61,13 +60,10 @@ public class ProjectServiceService(IProjectServiceRepository projectServiceRepos
             {
                 var newProjectServiceEntity = ProjectServiceFactory.Create(projectId, serviceId);
                 await _projectServiceRepository.AddAsync(newProjectServiceEntity);
-                //await _projectServiceRepository.UpdateAsync(x => x.ProjectId == projectId
-                //    && x.ServiceId == serviceId, newProjectServiceEntity);
+                var psAddSaveResult = await _projectServiceRepository.SaveAsync();
+                if (psAddSaveResult == false)
+                    throw new Exception("Error saving updated ProjectService");
             }
-
-            var psSaveResult = await _projectServiceRepository.SaveAsync();
-            if (psSaveResult == false)
-                throw new Exception("Error saving updated ProjectService");
 
             return ResponseResult.Ok();
         }
