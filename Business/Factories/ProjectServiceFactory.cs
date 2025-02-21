@@ -6,7 +6,7 @@ public static class ProjectServiceFactory
 {
     public static ProjectServiceJunctionEntity Create(int projectId, int serviceId) => new()
     {
-        ProjectId =projectId,
+        ProjectId = projectId,
         ServiceId = serviceId,
     };
 }
