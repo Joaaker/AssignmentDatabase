@@ -108,7 +108,7 @@ const NewProject = () => {
     <div className="container">
       <h1>Skapa ett nytt projekt</h1>
       <HomeBtn />
-      <form id="projectForm" onSubmit={handleSubmit}>
+      <form className='m-5' id="projectForm" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="title">Projekttitel: </label>
           <input type="text" id="title" value={title} onChange={(e) => setTitle(e.target.value)} required />
@@ -126,14 +126,14 @@ const NewProject = () => {
           <input type="date" id="endDate" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
         </div>
         <div>
-          <label htmlFor="projectStatusId">Projekstatus:</label>
+          <label htmlFor="projectStatusId">Projekstatus: </label>
           <select id="projectStatusId" value={projectStatusId} onChange={(e) => setProjectStatusId(e.target.value)} required>
             <option value="">Välj status</option>
             {projectStatuses.map((status) => <option key={status.id} value={status.id}>{status.statusName}</option>)}
           </select>
         </div>
         <div>
-          <label htmlFor="customerId">Kund:</label>
+          <label htmlFor="customerId">Kund: </label>
           <select id="customerId" value={customerId} onChange={(e) => setCustomerId(e.target.value)} required>
             <option value="">Välj kund</option>
             {customers.map((customer) => <option key={customer.id} value={customer.id}>{customer.customerName}</option>)}
@@ -147,7 +147,7 @@ const NewProject = () => {
           </select>
         </div>
         <div>
-          <label htmlFor="serviceDropdown">Välj tjänst:</label>
+          <label htmlFor="serviceDropdown">Välj tjänst: </label>
           <select id="serviceDropdown" value={serviceSelection} onChange={handleServiceSelect}>
             <option value="">Välj tjänst</option>
             {services.map((service) => <option key={service.id} value={service.id}>{service.serviceName}, {service.unitType}</option>)}

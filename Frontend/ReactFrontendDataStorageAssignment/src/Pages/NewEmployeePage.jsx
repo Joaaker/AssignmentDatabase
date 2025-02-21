@@ -33,17 +33,17 @@ const NewEmployee = () => {
     <div className="container">
       <h1>Skapa en ny anställd</h1>
       <HomeBtn />
-      <form id="employeeForm" onSubmit={handleSubmit}>
+      <form className='m-5' id="employeeForm" onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="firstName">Förnamn:</label>
+          <label htmlFor="firstName">Förnamn: </label>
           <input type="text" id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
         </div>
         <div>
-          <label htmlFor="lastName">Efternamn:</label>
+          <label htmlFor="lastName">Efternamn: </label>
           <input type="text" id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
         </div>
         <div>
-          <label htmlFor="roleName">Roll:</label>
+          <label htmlFor="roleName">Roll: </label>
           <input type="text" id="roleName" value={roleName} onChange={(e) => setRoleName(e.target.value)} required />
         </div>
         {error && <div className="error">{error}</div>}

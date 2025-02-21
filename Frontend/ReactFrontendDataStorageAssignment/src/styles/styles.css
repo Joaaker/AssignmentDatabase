@@ -81,3 +81,7 @@ form{
     display: flex;
     flex-direction: column;
 }
+
+.m-5 div{
+    margin: .5rem;
+}

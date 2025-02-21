@@ -39,13 +39,13 @@ const NewService = () => {
     <div className="container">
       <h1>Skapa en ny tjänst</h1>
       <HomeBtn />
-      <form id="serviceForm" onSubmit={handleSubmit}>
+      <form className='m-5' id="serviceForm" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="serviceName">Tjänstnamn: </label>
           <input type="text" id="serviceName" value={serviceName} onChange={(e) => setServiceName(e.target.value)} required />
         </div>
         <div>
-          <label htmlFor="price">Pris:</label>
+          <label htmlFor="price">Pris: </label>
           <input type="number" id="price" value={price} onChange={(e) => setPrice(e.target.value)} required />
         </div>
         <div>
