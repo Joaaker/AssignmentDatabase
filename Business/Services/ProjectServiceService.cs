@@ -43,7 +43,7 @@ public class ProjectServiceService(IProjectServiceRepository projectServiceRepos
         //Transactions are handled in ProjectService.UpdateProjectAsync
         try
         {
-            if (currentServiceIds.Count == 0 && newServiceIds.Count == 0 || currentServiceIds.SequenceEqual(newServiceIds))
+            if (currentServiceIds.SequenceEqual(newServiceIds))
                 return ResponseResult.Ok();
 
             var toRemove = currentServiceIds.Except(newServiceIds).ToList();
